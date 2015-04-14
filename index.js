@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
-var schemachine = {};
-schemachine.loaded = false;
+var monger = {};
+monger.loaded = false;
 
-schemachine.load = function(dir, schemaFolder) {
+monger.load = function(dir, schemaFolder) {
     var file = '';
     var filename = '';
     walkLoad(dir, schemaFolder, function(err, results){
@@ -15,7 +15,7 @@ schemachine.load = function(dir, schemaFolder) {
             if (~filename.indexOf('.js'))
                 {
                     schemaname = filename.substr(0, filename.lastIndexOf('.'));
-                    schemachine[schemaname] = require(file);
+                    monger[schemaname] = require(file);
                 }
         }
     });
@@ -55,4 +55,4 @@ function walkLoad(dir, schemaFolder, done) {
     });
 }
 
-module.exports = schemachine;
+module.exports = monger;
