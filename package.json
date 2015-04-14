@@ -1,0 +1,17 @@
+{
+  "name": "schemachine",
+  "version": "0.9.4",
+  "description": "Schema importer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "killerwave",
+    "mongoose"
+  ],
+  "author": "Mark Bashansci",
+  "email": "mark@killerwave.net",
+  "license": "open",
+  "dependencies": {}
+}
