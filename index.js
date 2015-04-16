@@ -23,7 +23,6 @@ monger.load = function(dir, schemaFolder) {
 
 
 function walkLoad(dir, schemaFolder, done) {
-    console.log('walkload!');
     var results = [];
     var parts = [];
     var lastpart = '';
