@@ -1,6 +1,6 @@
 {
   "name": "monger",
-  "version": "0.4.4",
+  "version": "1.0.0",
   "description": "Mongoose schema loader",
   "main": "index.js",
   "scripts": {
