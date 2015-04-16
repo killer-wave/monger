@@ -14,8 +14,9 @@ monger.load = function(dir, schemaFolder) {
             filename = path.basename(file);
             if (~filename.indexOf('.js'))
                 {
+                    var newschema = require(file);
                     schemaname = filename.substr(0, filename.lastIndexOf('.'));
-                    monger[schemaname] = require(file);
+                    monger[newschema.modelName] = newschema;
                 }
         }
     });

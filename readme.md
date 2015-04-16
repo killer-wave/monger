@@ -23,16 +23,16 @@ monger.load(__dirname + '/mydir', 'models');
 This will load all js files located in any "models" folders contained within /mydir
 
 To use loaded schemas in your application. Require Mongoose and monger.
-Then schemas can be accessed through monger.schemafilename.
+Then schemas can be accessed through monger.SchemaName.
 
 ```sh
-/my/dir/services/models/schemafilename.js
+/my/dir/services/models/SchemaName.js
 ```
 
 ```js
 var mongoose = require('mongoose');
 var monger = require('monger');
-monger.schemafilename.findOne({},function(err,result){
+monger.SchemaName.findOne({},function(err,result){
     console.log(result);
 });
 ```
