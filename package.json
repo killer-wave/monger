@@ -1,14 +1,14 @@
 {
   "name": "monger",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Mongoose schema loader",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/killer-wave/monger.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/killer-wave/monger.git"
   },
   "keywords": [
     "killerwave",
