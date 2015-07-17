@@ -16,7 +16,15 @@ monger.load = function(dir, schemaFolder) {
                 {
                     var newschema = require(file);
                     schemaname = filename.substr(0, filename.lastIndexOf('.'));
-                    monger[newschema.modelName] = newschema;
+                    if(newschema instanceof Function || typeof(newschema) === 'function') {
+                        monger[newschema.modelName] = newschema;
+                    }
+                    else if(newschema instanceof Object) {
+                        var keys = Object.keys(newschema);
+                        keys.forEach(function(k) {
+                            monger[k] = newschema[k];
+                        });
+                    }
                 }
         }
     });
