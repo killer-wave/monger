@@ -1,66 +1,53 @@
-var mongoose = require('mongoose');
-var fs = require('fs');
-var path = require('path');
+var Promise = require("bluebird");
+var fs = Promise.promisifyAll(require("fs"));
+var Path = require("path");
 var monger = {};
 monger.loaded = false;
-
-monger.load = function(dir, schemaFolder) {
-    var file = '';
-    var filename = '';
-    walkLoad(dir, schemaFolder, function(err, results){
-        for(var result in results)
-        {
-            file = results[result];
-            filename = path.basename(file);
-            if (~filename.indexOf('.js'))
-                {
-                    var newschema = require(file);
-                    schemaname = filename.substr(0, filename.lastIndexOf('.'));
-                    if(newschema instanceof Function || typeof(newschema) === 'function') {
-                        monger[newschema.modelName] = newschema;
-                    }
-                    else if(newschema instanceof Object) {
-                        var keys = Object.keys(newschema);
-                        keys.forEach(function(k) {
-                            monger[k] = newschema[k];
-                        });
-                    }
+monger.load = function(dirName, modelFolder) {
+    return readDir(dirName, modelFolder).then(function(files){
+        files.forEach(function(filename) {
+            if(filename) {
+                var newschema = require(filename);
+                schemaname = filename.substr(0, filename.lastIndexOf('.'));
+                if(newschema instanceof Function || typeof(newschema) === 'function') {
+                    monger[newschema.modelName] = newschema;
                 }
-        }
+                else if(newschema instanceof Object) {
+                    var keys = Object.keys(newschema);
+                    keys.forEach(function(k) {
+                        monger[k] = newschema[k];
+                    });
+                }
+            }
+        });
+        
+        monger.loaded = true;
     });
 };
-
-
-function walkLoad(dir, schemaFolder, done) {
-    var results = [];
-    var parts = [];
-    var lastpart = '';
-    fs.readdir(dir, function(err, list) {
-        if (err) return done(err);
-        var pending = list.length;
-        if (!pending) return done(null, results);
-        list.forEach(function(file) {
-            file = path.resolve(dir, file);
-            fs.stat(file, function(err, stat) {
-                if (stat && stat.isDirectory()) {
-                  walkLoad(file, schemaFolder, function(err, res) {
-                    results = results.concat(res);
-                    if (!--pending) done(null, results);
-                  });
+function readDir(dirName, modelFolder) {
+    return fs.readdirAsync(dirName).map(function (fileName) {
+        var path = Path.join(dirName, fileName);
+        return fs.statAsync(path).then(function(stat) {
+            var parts = path.split(Path.sep);
+            if(!stat.isDirectory()){
+                // it's a file, is it in the modelFolder?
+                var dir = parts[parts.length -2];
+                if(dir === modelFolder) {
+                    return path;
                 }
-                else
-                {
-                    parts = dir.toString().split(path.sep);
-                    lastpart = parts[parts.length - 1];
-                    if (lastpart === schemaFolder)
-                    {
-                        results.push(file); 
-                    }
-                    if (!--pending) done(null, results);
+            } else {
+                if(parts[parts.length -1] !== "node_modules") {
+                    return readDir(path, modelFolder);
                 }
-            });
+            }
         });
-    });
+    }).reduce(function (a, b) {
+        if(typeof a == "undefined") {
+            a = [];
+        }
+        if(a.length > 0 || b) {
+            return a.concat(b);
+        }
+    }, []);
 }
-
 module.exports = monger;
